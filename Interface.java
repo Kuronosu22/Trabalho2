@@ -1,12 +1,13 @@
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.ArrayList;
 
 public class Interface {
     public static void main(String[] args) {
-        ArrayList<Object> arrayList = new ArrayList<>();
+        ArrayList<Produto> produtos = new ArrayList<>();
         Font bold = new Font("Bold", Font.BOLD, 20);
 
         JFrame frame1 = new JFrame("Cadastro de Produtos");
@@ -37,37 +38,64 @@ public class Interface {
         TextField fieldQuantidade = new TextField();
         CreateTextField(fieldQuantidade, 150, 135, 300, 30, bold, panel1);
 
-        JLabel labelConfirmacao = new JLabel("Produto cadastrado!");
-        CreateLabel(labelConfirmacao, 190, 160, 150,40, panel1);
+        JLabel labelConfirmacao = new JLabel();
+        CreateLabel(labelConfirmacao, 50, 160, 400,40, panel1);
+        labelConfirmacao.setHorizontalAlignment(SwingConstants.CENTER);
         labelConfirmacao.setVisible(false);
 
         JLabel labelListagem = new JLabel();
         CreateLabel(labelListagem, 50, 50, 500, 200, panel2);
 
+        String [] colunas = {"Nome", "Preço", "Quantidade"};
+        DefaultTableModel model = new DefaultTableModel(colunas, 0);
+
         JButton botaoCadastrar = new JButton("Cadastrar");
         CreateButton(botaoCadastrar, 50,200,100,40, panel1);
         botaoCadastrar.addActionListener(_ -> {
-            Produto produto = new Produto(
-                    fieldNome.getText(),
-                    Float.parseFloat(fieldPreco.getText()),
-                    Integer.parseInt(fieldQuantidade.getText())
-            );
-            arrayList.add(produto);
-            String Lista = "";
+            try {
+                if (Float.parseFloat(fieldPreco.getText()) <= 0) {
+                    throw new Exception("O valor do preço não pode ser menor ou igual a 0...");
+                }
+                if (Integer.parseInt(fieldQuantidade.getText()) < 0) {
+                    throw new Exception("A quantidade não pode ser negativa...");
+                }
 
-            for (int i = 0; i < arrayList.toArray().length; i++) {
-                Lista = Lista.concat("Nome: " + produto.Nome + "<BR>" + "Preço: " + produto.Preco +
-                        "<BR>" + "Quantidade: " + produto.Quantidade + "<BR>");
+                Produto produto = new Produto(
+                        fieldNome.getText(),
+                        Float.parseFloat(fieldPreco.getText()),
+                        Integer.parseInt(fieldQuantidade.getText())
+                );
+                model.setRowCount(0);
+                produtos.add(produto);
+                for (Produto prod : produtos){
+                    Object [] linha = {
+                            prod.nome, prod.preco, prod.quantidade
+                    };
+                    model.addRow(linha);
+                }
+
+                labelConfirmacao.setText("Produto cadastrado!");
+                labelConfirmacao.setVisible(true);
+            }
+            catch (NumberFormatException e){
+                labelConfirmacao.setText("Dados inseridos incorretamente, tente novamente...");
+                labelConfirmacao.setVisible(true);
+            }
+            catch (Exception e){
+                labelConfirmacao.setText(e.getMessage());
+                labelConfirmacao.setVisible(true);
             }
 
-            labelListagem.setText("<HTML>"+ Lista + "</HTML>");
 
-            labelConfirmacao.setVisible(true);
         });
 
         JButton botaoListar = new JButton("Listar");
         CreateButton(botaoListar, 200,200,100,40, panel1);
         botaoListar.addActionListener(_ -> {
+            JTable tabela = new JTable(model);
+            JScrollPane scrollPane = new JScrollPane(tabela);
+            scrollPane.setBounds(0,0,800,300);
+            panel2.add(scrollPane, BorderLayout.CENTER);
             frame1.setVisible(false);
             frame2.setVisible(true);
         });
@@ -81,14 +109,11 @@ public class Interface {
         });
 
         JButton botaoVoltar = new JButton("Voltar");
-        CreateButton(botaoVoltar, 350,300, 100, 40 , panel2);
+        CreateButton(botaoVoltar, 350,310, 100, 40 , panel2);
         botaoVoltar.addActionListener(_ -> {
             frame1.setVisible(true);
             frame2.setVisible(false);
         });
-
-        JLabel labelProduto = new JLabel("Produtos Cadastrados:");
-        CreateLabel(labelProduto, 50, 0, 150,100, panel2);
 
         frame1.setSize(500, 300);
         frame1.setLocationRelativeTo(null);

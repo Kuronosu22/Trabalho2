@@ -1,10 +1,11 @@
+
 public class Produto {
-    public String Nome;
-    public float Preco;
-    public double Quantidade;
+    public String nome;
+    public float preco;
+    public double quantidade;
     public Produto(String nome, float preco, double quantidade){
-        Nome = nome;
-        Preco = preco;
-        Quantidade = quantidade;
+        this.nome = nome;
+        this.preco = preco;
+        this.quantidade = quantidade;
     }
 }
