@@ -65,8 +65,10 @@ public class Interface {
                         Float.parseFloat(fieldPreco.getText()),
                         Integer.parseInt(fieldQuantidade.getText())
                 );
+
                 model.setRowCount(0);
                 produtos.add(produto);
+
                 for (Produto prod : produtos){
                     Object [] linha = {
                             prod.nome, prod.preco, prod.quantidade
@@ -76,12 +78,12 @@ public class Interface {
 
                 labelConfirmacao.setText("Produto cadastrado!");
                 labelConfirmacao.setVisible(true);
-            }
-            catch (NumberFormatException e){
+
+            } catch (NumberFormatException e){
                 labelConfirmacao.setText("Dados inseridos incorretamente, tente novamente...");
                 labelConfirmacao.setVisible(true);
-            }
-            catch (Exception e){
+
+            } catch (Exception e){
                 labelConfirmacao.setText(e.getMessage());
                 labelConfirmacao.setVisible(true);
             }
