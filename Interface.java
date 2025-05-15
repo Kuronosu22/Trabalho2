@@ -51,6 +51,10 @@ public class Interface {
 
         JButton botaoCadastrar = new JButton("Cadastrar");
         CreateButton(botaoCadastrar, 50,200,100,40, panel1);
+
+        Timer timer = new Timer(3000, _ -> labelConfirmacao.setVisible(false));
+        timer.setRepeats(false);
+
         botaoCadastrar.addActionListener(_ -> {
             try {
                 if (Float.parseFloat(fieldPreco.getText()) <= 0) {
@@ -60,11 +64,17 @@ public class Interface {
                     throw new Exception("A quantidade não pode ser negativa...");
                 }
 
-                Produto produto = new Produto(
-                        fieldNome.getText(),
-                        Float.parseFloat(fieldPreco.getText()),
-                        Integer.parseInt(fieldQuantidade.getText())
-                );
+                String nome = fieldNome.getText();
+                float preco = Float.parseFloat(fieldPreco.getText());
+                int quantidade = Integer.parseInt(fieldQuantidade.getText());
+
+                for (Produto prod : produtos) {
+                    if (prod.nome.equalsIgnoreCase(nome)) {
+                        throw new Exception("Produto já existente no estoque");
+                    }
+                }
+                
+                Produto produto = new Produto(nome, preco, quantidade);
 
                 model.setRowCount(0);
                 produtos.add(produto);
@@ -78,17 +88,18 @@ public class Interface {
 
                 labelConfirmacao.setText("Produto cadastrado!");
                 labelConfirmacao.setVisible(true);
+                timer.start();
 
             } catch (NumberFormatException e){
                 labelConfirmacao.setText("Dados inseridos incorretamente, tente novamente...");
                 labelConfirmacao.setVisible(true);
+                timer.start();
 
             } catch (Exception e){
                 labelConfirmacao.setText(e.getMessage());
                 labelConfirmacao.setVisible(true);
+                timer.start();
             }
-
-
         });
 
         JButton botaoListar = new JButton("Listar");
