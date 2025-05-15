@@ -6,6 +6,7 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class Interface {
+    public static ArrayList<TextField> fields = new ArrayList<>();
     public static void main(String[] args) {
         ArrayList<Produto> produtos = new ArrayList<>();
         Font bold = new Font("Bold", Font.BOLD, 20);
@@ -21,36 +22,36 @@ public class Interface {
         panel2.setLayout(null);
 
         JLabel labelNome = new JLabel("Nome:");
-        CreateLabel(labelNome, 50,0,100,100, panel1);
+        createLabel(labelNome, 50,0,100,100, panel1);
 
         TextField fieldNome = new TextField();
-        CreateTextField(fieldNome, 150, 35, 300, 30, bold, panel1);
+        createTextField(fieldNome, 150, 35, 300, 30, bold, panel1);
 
         JLabel labelPreco = new JLabel("Preço:");
-        CreateLabel(labelPreco, 50,50,100,100, panel1);
+        createLabel(labelPreco, 50,50,100,100, panel1);
 
         TextField fieldPreco = new TextField();
-        CreateTextField(fieldPreco, 150, 85, 300, 30, bold, panel1);
+        createTextField(fieldPreco, 150, 85, 300, 30, bold, panel1);
 
         JLabel labelQuantidade = new JLabel("Quantidade:");
-        CreateLabel(labelQuantidade, 50,100,100,100, panel1);
+        createLabel(labelQuantidade, 50,100,100,100, panel1);
 
         TextField fieldQuantidade = new TextField();
-        CreateTextField(fieldQuantidade, 150, 135, 300, 30, bold, panel1);
+        createTextField(fieldQuantidade, 150, 135, 300, 30, bold, panel1);
 
         JLabel labelConfirmacao = new JLabel();
-        CreateLabel(labelConfirmacao, 50, 160, 400,40, panel1);
+        createLabel(labelConfirmacao, 50, 160, 400,40, panel1);
         labelConfirmacao.setHorizontalAlignment(SwingConstants.CENTER);
         labelConfirmacao.setVisible(false);
 
         JLabel labelListagem = new JLabel();
-        CreateLabel(labelListagem, 50, 50, 500, 200, panel2);
+        createLabel(labelListagem, 50, 50, 500, 200, panel2);
 
         String [] colunas = {"Nome", "Preço", "Quantidade"};
         DefaultTableModel model = new DefaultTableModel(colunas, 0);
 
         JButton botaoCadastrar = new JButton("Cadastrar");
-        CreateButton(botaoCadastrar, 50,200,100,40, panel1);
+        createButton(botaoCadastrar, 50,200,100,40, panel1);
 
         Timer timer = new Timer(3000, _ -> labelConfirmacao.setVisible(false));
         timer.setRepeats(false);
@@ -88,6 +89,7 @@ public class Interface {
 
                 labelConfirmacao.setText("Produto cadastrado!");
                 labelConfirmacao.setVisible(true);
+                clearAllFields(fields);
                 timer.start();
 
             } catch (NumberFormatException e){
@@ -103,7 +105,7 @@ public class Interface {
         });
 
         JButton botaoListar = new JButton("Listar");
-        CreateButton(botaoListar, 200,200,100,40, panel1);
+        createButton(botaoListar, 200,200,100,40, panel1);
         botaoListar.addActionListener(_ -> {
             JTable tabela = new JTable(model);
             JScrollPane scrollPane = new JScrollPane(tabela);
@@ -114,15 +116,11 @@ public class Interface {
         });
 
         JButton botaoLimpar = new JButton("Limpar");
-        CreateButton(botaoLimpar, 350,200,100,40, panel1);
-        botaoLimpar.addActionListener(_ -> {
-            fieldNome.setText("");
-            fieldPreco.setText("");
-            fieldQuantidade.setText("");
-        });
+        createButton(botaoLimpar, 350,200,100,40, panel1);
+        botaoLimpar.addActionListener(_ -> clearAllFields(fields));
 
         JButton botaoVoltar = new JButton("Voltar");
-        CreateButton(botaoVoltar, 350,310, 100, 40 , panel2);
+        createButton(botaoVoltar, 350,310, 100, 40 , panel2);
         botaoVoltar.addActionListener(_ -> {
             frame1.setVisible(true);
             frame2.setVisible(false);
@@ -141,19 +139,26 @@ public class Interface {
         frame2.add(panel2);
     }
 
-    public static void CreateTextField(@NotNull TextField var, int x, int y, int width, int height, Font font, @NotNull JPanel panel){
+    public static void createTextField(@NotNull TextField var, int x, int y, int width, int height, Font font, @NotNull JPanel panel){
         var.setBounds(x, y, width, height);
         var.setFont(font);
         panel.add(var);
+        fields.add(var);
     }
 
-    public static void CreateLabel(@NotNull JLabel var, int x, int y, int width, int height, @NotNull JPanel panel){
+    public static void createLabel(@NotNull JLabel var, int x, int y, int width, int height, @NotNull JPanel panel){
         var.setBounds(x, y, width, height);
         panel.add(var);
     }
 
-    public static void CreateButton(@NotNull JButton var, int x, int y, int width, int height, @NotNull JPanel panel){
+    public static void createButton(@NotNull JButton var, int x, int y, int width, int height, @NotNull JPanel panel){
         var.setBounds(x, y, width, height);
         panel.add(var);
+    }
+    
+    public static void clearAllFields(ArrayList<TextField> fields) {
+        for (TextField field : fields) {
+            field.setText("");
+        }
     }
 }
